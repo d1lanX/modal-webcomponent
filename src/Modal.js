@@ -9,22 +9,88 @@ class Modal extends HTMLElement {
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    max-width: 500px;
+    position: fixed;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1000;
+    background-color: white;
+    margin: 0; /* Remove default margins */
+  }
+
+  /* Size variants */
+  dialog.size-sm {
+    max-width: 400px;
     width: 90%;
-    position: fixed; /* Ensures it's positioned relative to the viewport */
+    max-height: 300px;
+  }
+  
+  dialog.size-md {
+    max-width: 600px;
+    width: 90%;
+    max-height: 500px;
+  }
+  
+  dialog.size-lg {
+    max-width: 900px;
+    width: 95%;
+    max-height: 700px;
+  }
+  
+  dialog.size-full {
+    width: calc(97vw - 40px) !important;
+    height: calc(95vh - 40px) !important;
+    max-width: calc(100vw - 40px) !important;
+    max-height: calc(100vh - 40px) !important;
+    top: 20px !important;
+    left: 20px !important;
+    right: 20px !important;
+    bottom: 20px !important;
+    transform: none !important;
+    border-radius: 8px;
+  }
+
+  /* Position variants (only apply when NOT full size) */
+  dialog:not(.size-full).pos-center {
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Centering */
-    opacity: 0; /* Initially hidden */
-    pointer-events: none; /* Disable interaction when hidden */
-    z-index: 1000; /* Ensure it's on top */
-    background-color: white;
+    transform: translate(-50%, -50%);
   }
+  
+  dialog:not(.size-full).pos-lt {
+    top: 20px;
+    left: 20px;
+    transform: none;
+  }
+  
+  dialog:not(.size-full).pos-rt {
+    top: 20px;
+    right: 20px;
+    left: auto;
+    transform: none;
+  }
+  
+  dialog:not(.size-full).pos-lb {
+    bottom: 20px;
+    left: 20px;
+    top: auto;
+    transform: none;
+  }
+  
+  dialog:not(.size-full).pos-rb {
+    bottom: 20px;
+    right: 20px;
+    top: auto;
+    left: auto;
+    transform: none;
+  }
+
   dialog::backdrop {
-    background-color: rgba(0, 0, 0, 0); /* Start fully transparent */
-    transition: background-color 0.3s ease-out; /* Transition for fading in/out */
+    background-color: rgba(0, 0, 0, 0.5);
+    transition: background-color 0.3s ease-out;
   }
-  @keyframes zoomIn {
+
+  /* Animation keyframes with position awareness */
+  @keyframes zoomInCenter {
     from {
       transform: translate(-50%, -50%) scale(0.8);
       opacity: 0;
@@ -34,24 +100,95 @@ class Modal extends HTMLElement {
       opacity: 1;
     }
   }
-  dialog[open] {
-    animation: zoomIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards; /* Elastic bounce */
-    opacity: 1; /* Override initial opacity for animation */
-    pointer-events: auto; /* Enable interaction */
-  }
-    dialog.fading-out {
-    animation: fadeOut 0.3s ease-out forwards;
-    pointer-events: none; /* Disable interaction immediately */
-}
 
-  @keyframes fadeOut {
+  @keyframes zoomInCorner {
+    from {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes zoomInFull {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Opening animations */
+  dialog[open].pos-center:not(.size-full) {
+    animation: zoomInCenter 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  dialog[open]:not(.pos-center):not(.size-full) {
+    animation: zoomInCorner 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  dialog[open].size-full {
+    animation: zoomInFull 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Closing animations */
+  dialog.fading-out {
+    pointer-events: none;
+  }
+
+  dialog.fading-out.pos-center:not(.size-full) {
+    animation: fadeOutCenter 0.3s ease-out forwards;
+  }
+
+  dialog.fading-out:not(.pos-center):not(.size-full) {
+    animation: fadeOutCorner 0.3s ease-out forwards;
+  }
+
+  dialog.fading-out.size-full {
+    animation: fadeOutFull 0.3s ease-out forwards;
+  }
+
+  @keyframes fadeOutCenter {
     from {
       opacity: 1;
-      transform: translate(-50%, -50%) scale(1); /* Maintain current scale */
+      transform: translate(-50%, -50%) scale(1);
     }
     to {
       opacity: 0;
-      transform: translate(-50%, -50%) scale(0.9); /* Slightly shrink as it fades */
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+  }
+
+  @keyframes fadeOutCorner {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+  }
+
+  @keyframes fadeOutFull {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(1.05);
     }
   }
 
@@ -62,11 +199,76 @@ class Modal extends HTMLElement {
   dialog:not([open]) {
     display: none;
   }
+
+  /* Content styling */
+  dialog section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  dialog header {
+    font-weight: bold;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  dialog header:empty {
+    display: none;
+  }
+
+  dialog footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  dialog footer:empty {
+    display: none;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    dialog.size-lg {
+      max-width: 95%;
+      width: 95%;
+    }
+    
+    dialog.size-md {
+      max-width: 90%;
+      width: 90%;
+    }
+    
+    dialog.pos-lt,
+    dialog.pos-rt,
+    dialog.pos-lb,
+    dialog.pos-rb {
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: auto;
+      transform: none;
+    }
+    
+    dialog.pos-rt {
+      left: 10px;
+      right: 10px;
+    }
+    
+    dialog.pos-lb,
+    dialog.pos-rb {
+      top: auto;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+    }
+  }
   </style>
   `.trim();
+
   sizes = ['sm', 'md', 'lg', 'full'];
-  positions = ['lt', 'rt', 'lb', 'lr', 'center'];
-  attributes = ['src', 'position', 'size', 'template', 'title', 'button'];
+  positions = ['lt', 'rt', 'lb', 'rb', 'center'];
 
   constructor() {
     super();
@@ -74,10 +276,10 @@ class Modal extends HTMLElement {
   }
 
   render() {
-    this.setAttributes();
+    this.#setAttributes();
 
     this.html = `
-    <dialog>
+    <dialog class="size-${this.size} pos-${this.position}">
       <section>
         <header>${this.getAttribute('title') || ''}</header>
           <slot></slot>
@@ -91,26 +293,26 @@ class Modal extends HTMLElement {
 
     this._slot = this.shadow.querySelectorAll('slot');
     this._modal = this.shadow.querySelector('dialog');
-    this._btn = this.shadow.querySelector('button>slot[name="button"]');
+    this._btn = this.shadow.querySelector('button');
 
-    this.cleanupFn = this.setListeners();
-
-    console.log(this._slot);
+    this.cleanupFn = this.#setListeners();
   }
 
-  setAttributes() {
-    this.size = this.getAttribute('size') ?? 'sm';
-    this.position = this.getAttribute('position') ?? 'center';
+  #setAttributes() {
+    this.size = this.getAttribute('size');
+    this.position = this.getAttribute('position');
     this.src = this.getAttribute('src');
     this.template = this.getAttribute('template');
     this.button = this.hasAttribute('button');
 
-    if (this.sizes.includes(this.size)) {
+    if (!this.sizes.includes(this.size)) {
       console.warn(`${this.tagName} el "size" no es valor valido (${this.sizes.join(',')})`);
+      this.size = 'sm';
     }
 
-    if (this.positions.includes(this.position)) {
+    if (!this.positions.includes(this.position)) {
       console.warn(`${this.tagName} "position" no es valor valido (${this.positions.join(',')})`);
+      this.position = 'center';
     }
   }
 
@@ -119,21 +321,51 @@ class Modal extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.cleanupFn();
+    if (this.cleanupFn) {
+      this.cleanupFn();
+    }
   }
 
   static get observedAttributes() {
-    return this.attributes;
+    return ['src', 'position', 'size', 'template', 'title', 'button'];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    this[name] = newValue;
+    if (oldValue !== newValue && this.shadow) {
+      this.render();
+    }
   }
 
-  setListeners() {
-    const openModal = this._btn.addEventListener('click', this.openModal.bind(this));
+  #setListeners() {
+    const openHandler = this.openModal.bind(this);
+    this._btn.addEventListener('click', openHandler);
+
+    const closeHandler = (e) => {
+      const bounds = this._modal.getBoundingClientRect();
+      if (
+        e.clientX < bounds.left ||
+        e.clientX > bounds.right ||
+        e.clientY < bounds.top ||
+        e.clientY > bounds.bottom
+      ) {
+        e.preventDefault();
+        this.closeModal();
+      }
+    };
+    this._modal.addEventListener('click', closeHandler);
+
+    const keyHandler = (e) => {
+      if (e.key === 'Escape' && this._modal.open) {
+        e.preventDefault();
+        this.closeModal();
+      }
+    };
+    document.addEventListener('keydown', keyHandler);
+
     return () => {
-      this._btn.removeEventListener(openModal);
+      this._btn.removeEventListener('click', openHandler);
+      this._modal.removeEventListener('click', closeHandler);
+      document.removeEventListener('keydown', keyHandler);
     };
   }
 
@@ -142,13 +374,13 @@ class Modal extends HTMLElement {
   }
 
   closeModal() {
+    if (!this._modal.open) return;
     this._modal.classList.add('fading-out');
-    this._modal.close();
+
     setTimeout(() => {
-      const style = window.getComputedStyle(this._modal);
-      const animationDuration = parseFloat(style.getPropertyValue('animation-duration')) * 1000; // Convert to ms
       this._modal.classList.remove('fading-out');
-    }, 3000);
+      this._modal.close();
+    }, 300);
   }
 
   fetchContent() {}
