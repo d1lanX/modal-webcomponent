@@ -287,7 +287,7 @@ class Modal extends HTMLElement {
       </section>
     </dialog><button class="${
       this.button ? '' : 'hidden'
-    }"><slot name="button">Abrir</slot></button>`.trim();
+    }"><slot name="button">&nbsp;</slot></button>`.trim();
 
     this.shadow.innerHTML = `${this.css}${this.html}`;
 

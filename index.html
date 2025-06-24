@@ -1,51 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dialog Web Component</title>
     <link rel="stylesheet" href="./src/style.css" />
     <script src="./src/Modal.js"></script>
-  </head>
-  <body>
+    <style>
+        code {
+            display: block;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1em;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            white-space: pre-line;
+            overflow-x: auto;
+        }
+
+        .token-bracket {
+            color: #d4d4d4;
+        }
+
+        .token-tag {
+            color: #569cd6;
+        }
+
+        .token-attr {
+            color: #9cdcfe;
+        }
+
+        .token-value {
+            color: #ce9178;
+        }
+
+        .token-comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+
+        .token-func {
+            color: #4ec9b0;
+        }
+
+        .token-method {
+            color: #dcdcaa;
+        }
+
+        .center {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
     <main>
-      <header>
-        <h1>Modal Webcomponent</h1>
-        <p>
-          this component tries to ease the handling of modals with local content, such as html but
-          also remote content stored in a website for example or for retrieving html behind an
-          endpoint
-        </p>
-        <h3>what does this mean?</h3>
-        <p>
-          it basically means you can set html as you would normally do, and later activate the
-          modal:
-        </p>
-        <pre>
-          <code id="normal__html">hola</code>
-        </pre>
-      </header>
-      <section>
-        <custom-modal size="lg" position="center" title="Prueba" button>
-          <h1>hola este es el contenido</h1>
-          <h1>hola este es el contenido</h1>
-          <h1>hola este es el contenido</h1>
-          <h1>hola este es el contenido</h1>
-          <h1>hola este es el contenido</h1>
-          <h1>hola este es el contenido</h1>
-          <h1>hola este es el contenido</h1>
-          <h1>hola este es el contenido</h1>
-          <h1>hola este es el contenido</h1>
-          <h1>hola este es el contenido</h1>
-          <h1>hola este es el contenido</h1>
-          <h1>hola este es el contenido</h1>
-          <h1>hola este es el contenido</h1>
-          <h1>hola este es el contenido</h1>
-          <h1>hola este es el contenido</h1>
-        </custom-modal>
-      </section>
-      <footer><a href="https://github.com/d1lanX">d1lanX</a></footer>
+        <header>
+            <h1>modal webcomponent</h1>
+            <p>
+                this component tries to ease the handling of modals with local html content, as well as <br>
+                html responses from a server.
+            </p>
+            <h3>what does this mean?</h3>
+            <p>
+                it basically means you can set html as you would normally do, and later activate the
+                modal:
+            </p>
+        </header>
+        <section>
+            <header>
+                <h3>attributes</h3>
+            </header>
+            <ul>
+                <li>size: (sm, md, lg, full)</li>
+                <li>position: (rt, lt, lb, rb, center)</li>
+                <li>header: string</li>
+                <li>button: boolean</li>
+            </ul>
+        </section>
+        <section>
+            <h3>demo:</h3>
+            <custom-modal size="md" position="center" title="Prueba" button>
+                <h1>Content goes here...</h1>
+            </custom-modal>
+        </section>
+        <br>
+        <hr>
+        <br>
+        <code id="normal__html"></code>
+        <br>
+        <br>
+        <br>
+        <footer class="center">
+            <a href="https://github.com/d1lanX">d1lanX</a>
+        </footer>
     </main>
-  </body>
+    <script>
+        const htmlExample = `
+        <span class="token-bracket">&lt;</span><span class="token-tag">custom-modal</span> <span class="token-attr">id</span>=<span class="token-value">"modal"</span><span class="token-bracket">&gt;</span>
+        &nbsp;&nbsp;<span class="token-bracket">&lt;</span><span class="token-tag">p</span><span class="token-bracket">&gt;</span>Content goes here...<span class="token-bracket">&lt;/</span><span class="token-tag">p</span><span class="token-bracket">&gt;</span>
+        <span class="token-bracket">&lt;/</span><span class="token-tag">custom-modal</span><span class="token-bracket">&gt;</span>
+    
+        <span class="token-bracket">&lt;</span><span class="token-tag">script</span><span class="token-bracket">&gt;</span>
+        &nbsp;&nbsp;<span class="token-func">modal</span>.<span class="token-method">openModal</span>(); <span class="token-comment">// opens up the modal</span>
+        &nbsp;&nbsp;<span class="token-func">modal</span>.<span class="token-method">closeModal</span>(); <span class="token-comment">// closes the modal</span>
+        <span class="token-bracket">&lt;/</span><span class="token-tag">script</span><span class="token-bracket">&gt;</span>
+    
+        <span class="token-bracket">&lt;</span><span class="token-tag">custom-modal</span> <span class="token-attr">id</span>=<span class="token-value">"modal"</span> <span class="token-attr">size</span>=<span class="token-value">"sm"</span> <span class="token-attr">position</span>=<span class="token-value">"center"</span> <span class="token-attr">header</span>=<span class="token-value">"Modal title"</span> <span class="token-attr">button</span><span class="token-bracket">&gt;</span>
+        &nbsp;&nbsp;<span class="token-bracket">&lt;</span><span class="token-tag">p</span><span class="token-bracket">&gt;</span>Content goes here...<span class="token-bracket">&lt;/</span><span class="token-tag">p</span><span class="token-bracket">&gt;</span>
+        &nbsp;&nbsp;<span class="token-bracket">&lt;</span><span class="token-tag">span</span> <span class="token-attr">slot</span>=<span class="token-value">"button"</span><span class="token-bracket">&gt;</span> <span class="token-bracket">&lt;/</span><span class="token-tag">span</span><span class="token-bracket">&gt;</span><span class="token-comment">// adding an element with the slot of button allows to customize the button when the attribute button is present</span> 
+        <span class="token-bracket">&lt;/</span><span class="token-tag">custom-modal</span><span class="token-bracket">&gt;</span>
+        `;
+    
+        document.getElementById("normal__html").innerHTML = htmlExample;
+    </script>
+</body>
 </html>
